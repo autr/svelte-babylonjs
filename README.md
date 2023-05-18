@@ -6,9 +6,7 @@ Babylon.js adapted for use with Svelte - it uses the TypeDoc definitions to gene
 
 ## Install
 
-```
-npm install svelte-babylonjs --save
-```
+Not published to npm yet - this repo is for demoing.
 
 ## Usage
 
