@@ -1,0 +1,139 @@
+
+			<script>
+				import { onMount, onDestroy } from 'svelte'
+				import { browser } from '$app/environment'
+				import { bbLookup, bbIniting, bbDebug } from '$lib/stores.js'
+				import * as BB from 'babylonjs'
+				import { createEventDispatcher } from 'svelte'
+				
+
+				// ================ QUICKLOOK ================
+
+				/* 
+					triggerOptions  * required
+					condition   
+					onBeforeExecuteObservable  
+					trigger  
+				*/
+
+				// ================ CONSTRUCTOR PROPERTIES ================
+
+				
+				export let triggerOptions = undefined // [any] * required
+				// the trigger, with or without parameters, for the action
+				
+
+				export let condition = undefined // [condition] 
+				// an optional determinant of action
+				
+
+				// ================ CLASS INSTANCE ================
+
+				export let instance = browser ? new BB.Action(triggerOptions,condition) : {}
+
+				// ================ ACCESSORS ================
+
+				
+
+				// ================ PROPERTIES ================
+
+				
+				export let onBeforeExecuteObservable = undefined // [observable] 
+				// an event triggered prior to action being executed.
+				
+
+				export let trigger = undefined // [number] 
+				// trigger for the action
+				
+
+				// ================ METHODS ================
+
+				
+				export let execute = (...args) => instance.execute(...args)
+
+				export let getTriggerParameter = (...args) => instance.getTriggerParameter(...args)
+
+				export let serialize = (...args) => instance.serialize(...args)
+
+				export let setTriggerParameter = (...args) => instance.setTriggerParameter(...args)
+
+				export let skipToNextActiveAction = (...args) => instance.skipToNextActiveAction(...args)
+
+				export let then = (...args) => instance.then(...args)
+				
+				// ================ LIFECYCLE ================
+				
+
+				export let onMounted = () => {}
+				export let onInited = () => {}
+				export let onLoaded = () => {}
+
+				const DEBUG = (...args) => $bbDebug ? console.log(`[${name}:Action]`, ...args) : null
+
+				const self = !import.meta.env.SSR && arguments[0]
+				$bbLookup.set( self, false )
+				bbIniting.set( true )
+				DEBUG('✨ initing')
+
+				onMount( async e => {
+					$bbLookup.set( self, true )
+					DEBUG('🌱 mounted')
+					let timeout = null
+					onMounted(instance)
+					const unsubscribe = bbIniting.subscribe( v => {
+						if (timeout) clearTimeout( timeout )
+						timeout = setTimeout( e => {
+
+							$bbIniting = !Array.from($bbLookup.values()).every(v => v)
+							DEBUG('🌿 inited')
+							onInited(instance)
+
+							if (!$bbIniting) {
+
+												if (triggerOptions != undefined) instance.triggerOptions = triggerOptions?.instance || triggerOptions
+				triggerOptions = instance.triggerOptions
+				if (condition != undefined) instance.condition = condition?.instance || condition
+				condition = instance.condition
+				if (onBeforeExecuteObservable != undefined) instance.onBeforeExecuteObservable = onBeforeExecuteObservable?.instance || onBeforeExecuteObservable
+				onBeforeExecuteObservable = instance.onBeforeExecuteObservable
+				if (trigger != undefined) instance.trigger = trigger?.instance || trigger
+				trigger = instance.trigger
+
+								// ================ AFRAME PARENT ================
+
+								if (autoParent && !parent) {
+									let counter = autoParent
+									let parentNode = fieldset
+									while( counter > 0 ) {
+										parentNode = parentNode.parentNode
+										counter-=1
+									}
+									const parentComponent = $bbLookup.get( parentNode )
+									if (parentComponent) {
+										instance.parent = parentComponent.instance
+										DEBUG('👩‍👦 parent')
+									}
+								}
+								DEBUG('🌴 aframe')
+								onLoaded(instance)
+							}
+						}, 10)
+					})
+				})
+
+
+				onDestroy( async e => {
+					DEBUG('🔥 destroyed')
+					if (instance.dispose) instance.dispose()
+				})
+
+
+				export let autoParent = null
+				let fieldset
+			</script>
+			<svelte:options accessors/>
+			<fieldset bind:this={fieldset}>
+				<slot />
+			</fieldset>
+
+			

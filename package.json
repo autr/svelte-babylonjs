@@ -1,0 +1,59 @@
+{
+  "name": "svelte-babylonjs",
+  "version": "5.48.0",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build && npm run package",
+    "preview": "vite preview",
+    "typedoc": "typedoc --config typedoc.json",
+    "fix-parser": "cp typedoc-json-parser.ClassParser.js node_modules/typedoc-json-parser/dist/lib/structures/class-parser/ClassParser.js",
+    "generate": "npm run fix-parser && node generate.js",
+    "generate-dev": "nodemon generate.js",
+    "package": "svelte-kit sync && svelte-package && publint",
+    "prepublishOnly": "npm run package"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js"
+    }
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "docs/*.json",
+      "src/**/*"
+    ]
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "svelte": "^3.54.0"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^2.0.0",
+    "@sveltejs/kit": "^1.5.0",
+    "@sveltejs/package": "^2.0.0",
+    "@types/jest": "^29.4.0",
+    "ammojs-typed": "^1.0.6",
+    "babylonjs": "5.48.0",
+    "babylonjs-post-process": "^5.48.1",
+    "cannon-es": "^0.20.0",
+    "earcut": "^2.2.4",
+    "node-fetch": "^3.3.0",
+    "publint": "^0.1.9",
+    "svelte": "^3.54.0",
+    "tslib": "^2.4.1",
+    "typedoc": "^0.23.26",
+    "typedoc-json-parser": "7.2.0",
+    "typescript": "^4.9.3",
+    "vite": "^4.0.0"
+  },
+  "svelte": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "dependencies": {
+    "fs-extra": "^11.1.0"
+  }
+}
